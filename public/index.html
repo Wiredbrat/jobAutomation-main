@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Review — job-search-bot</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <h1>Job Review</h1>
+      <div class="counts" id="counts"></div>
+    </header>
+
+    <nav class="tabs" id="tabs">
+      <button class="tab" data-status="all">All</button>
+      <button class="tab" data-status="scored">Scored</button>
+      <button class="tab" data-status="tailored">Tailored</button>
+      <button class="tab" data-status="applied">Applied</button>
+      <button class="tab" data-status="skipped">Skipped</button>
+      <button class="tab tab-stats" data-status="stats">Stats</button>
+    </nav>
+
+    <main id="list" class="list"></main>
+    <main id="stats" class="stats" hidden></main>
+  </div>
+
+  <div class="drawer" id="drawer">
+    <div class="drawer-inner">
+      <button class="drawer-close" id="drawerClose">&times;</button>
+      <div id="drawerContent"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

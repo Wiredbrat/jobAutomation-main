@@ -1,0 +1,37 @@
+{
+  "name": "autojob",
+  "version": "1.0.0",
+  "description": "job search and apply automatation platform.",
+  "keywords": [
+    "automation",
+    "job"
+  ],
+  "license": "ISC",
+  "author": "Atul Verma",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "discover": "node service/discover.js",
+    "scrape": "node service/scrape.js",
+    "score": "node service/score.js",
+    "tailor": "node service/tailor.js",
+    "apply": "node service/apply.js",
+    "pipeline": "node service/pipeline.js"
+  },
+  "dependencies": {
+    "@langchain/core": "^1.2.11",
+    "@langchain/google-genai": "^2.3.2",
+    "@langchain/groq": "^1.3.1",
+    "@langchain/ollama": "^1.3.0",
+    "axios": "^1.20.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "langchain": "^1.5.11",
+    "mongodb": "^7.6.0",
+    "nodemon": "^3.1.14",
+    "playwright": "^1.63.0",
+    "zod": "^4.6.4"
+  }
+}
