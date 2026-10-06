@@ -1,11 +1,25 @@
 {
   "greenhouse": [
-    "stripe",
-    "airbnb",
-    "notion"
+    "groww",
+    "slice",
+    "zenoti"
   ],
-  "lever": [
-    "netflix",
-    "figma"
+  "lever": [],
+  "ashby": [],
+  "smartrecruiters": [
+    "practo",
+    "policybazaar",
+    "makemytrip",
+    "yatra",
+    "ola",
+    "paytm",
+    "byjus"
+  ],
+  "recruitee": [],
+  "workable": [
+    "hyperverge",
+    "signzy",
+    "setu",
+    "decentro"
   ]
 }

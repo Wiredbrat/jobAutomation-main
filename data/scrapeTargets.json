@@ -1,3 +1,10 @@
 [
-  { "company": "example-startup", "url": "https://example.com/careers" }
+  {
+    "company": "example-startup",
+    "url": "https://example.com/careers"
+  },
+  {
+    "company": "mill.com",
+    "url": "https://mill.com/careers"
+  }
 ]

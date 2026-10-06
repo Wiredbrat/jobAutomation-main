@@ -274,6 +274,7 @@ button.btn.danger { border-color: var(--low); color: var(--low); }
 .bar-fill.bar-tailored { background: var(--mid); }
 .bar-fill.bar-applied { background: var(--good); }
 .bar-fill.bar-skipped { background: var(--low); }
+.bar-fill.bar-excluded_location { background: var(--text-dim); opacity: 0.6; }
 
 .bar-count {
   text-align: right;

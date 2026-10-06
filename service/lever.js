@@ -1,4 +1,5 @@
 import axios from "axios";
+import { uploadResumeIfPresent } from "./scrapers/fileUpload.js";
 
 export async function fetchLeverJobs(site) {
   const url = `https://api.lever.co/v0/postings/${site}?mode=json`;
@@ -30,7 +31,7 @@ function stripHtml(text) {
 }
 
 
-export async function fillLeverForm(page, { resume, coverLetterText }) {
+export async function fillLeverForm(page, { resume, coverLetterText, resumeFilePath }) {
   const trySet = async (selector, value) => {
     if (!value) return;
     const el = page.locator(selector).first();
@@ -47,6 +48,8 @@ export async function fillLeverForm(page, { resume, coverLetterText }) {
   await trySet('input[name="urls[GitHub]"]', resume.contact?.github);
   await trySet('input[name="urls[Portfolio]"]', resume.contact?.portfolio);
  
+  await uploadResumeIfPresent(page, resumeFilePath);
+
   if (coverLetterText) {
     const additionalInfo = page.locator('textarea[name="comments"]');
     if (await additionalInfo.count()) {

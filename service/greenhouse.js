@@ -1,4 +1,5 @@
 import axios from "axios";
+import { uploadResumeIfPresent } from "./scrapers/fileUpload.js";
 
 /**
  * Fetches all open jobs for a company on Greenhouse's public job board API.
@@ -32,7 +33,7 @@ function stripHtml(html) {
   return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
-export async function fillGreenhouseForm(page, { resume, coverLetterText }) {
+export async function fillGreenhouseForm(page, { resume, coverLetterText, resumeFilePath }) {
   const [firstName, ...rest] = resume.name.split(" ");
   const lastName = rest.join(" ");
  
@@ -49,6 +50,10 @@ export async function fillGreenhouseForm(page, { resume, coverLetterText }) {
   await trySet('input[name="email"]', resume.contact?.email);
   await trySet('input[name="phone"]', resume.contact?.phone);
   await trySet('input[autocomplete="url"]', resume.contact?.portfolio);
+  await trySet('input[name*="linkedin" i]', resume.contact?.linkedin);
+  await trySet('input[name*="github" i]', resume.contact?.github);
+
+  await uploadResumeIfPresent(page, resumeFilePath);
  
   // Greenhouse often exposes a free-text cover letter box; not always present.
   const coverLetterBox = page.locator("textarea").filter({ hasText: "" });

@@ -18,6 +18,8 @@
  * hand, same as before.
  */
 
+import { uploadResumeIfPresent } from "./fileUpload.js";
+
 const FILLABLE_SELECTOR =
   "input:not([type=hidden]):not([type=file]):not([type=checkbox])" +
   ":not([type=radio]):not([type=submit]):not([type=button]):not([type=image])," +
@@ -62,10 +64,43 @@ function buildValues(resume, coverLetterText) {
 }
 
 /**
+ * Some ATS forms use a <select> for country/location instead of free text.
+ * Best-effort: only acts when a select's label clearly says country/location
+ * and the option text matches; silently skips otherwise (leaves it for
+ * manual review rather than picking the wrong option).
+ */
+async function trySelectLocation(page, resume) {
+  const countryWord = (resume.contact?.location || "").split(",").pop()?.trim();
+  if (!countryWord) return;
+
+  const selects = await page.$$eval("select", (els) =>
+    els.map((el, index) => ({
+      index,
+      name: el.name || "",
+      id: el.id || "",
+      label:
+        el.closest("label")?.innerText ||
+        el.closest("div, li, fieldset")?.querySelector("label")?.innerText ||
+        "",
+    }))
+  );
+
+  const match = selects.find((s) => /country|location/i.test([s.name, s.id, s.label].join(" ")));
+  if (!match) return;
+
+  try {
+    await page.locator("select").nth(match.index).selectOption({ label: countryWord });
+    console.log(`Selected "${countryWord}" in a location/country dropdown.`);
+  } catch {
+    // Option text didn't match exactly (e.g. "IN" vs "India") — leave for manual review.
+  }
+}
+
+/**
  * Fills whatever it can recognize on an arbitrary application form and
  * leaves everything else untouched. Returns a summary the caller can log.
  */
-export async function fillGenericForm(page, { resume, coverLetterText }) {
+export async function fillGenericForm(page, { resume, coverLetterText, resumeFilePath }) {
   const values = buildValues(resume, coverLetterText);
 
   const fields = await page.$$eval(FILLABLE_SELECTOR, (els) =>
@@ -136,6 +171,9 @@ export async function fillGenericForm(page, { resume, coverLetterText }) {
   if (skipped.length) {
     console.log(`Not found on this form: ${skipped.join(", ")}.`);
   }
+
+  await uploadResumeIfPresent(page, resumeFilePath);
+  await trySelectLocation(page, resume);
 
   return { filled, skipped };
 }

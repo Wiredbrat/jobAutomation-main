@@ -19,6 +19,14 @@ async function run() {
 
   const started = new Date().toISOString();
 
+  // Off by default — it's a Playwright crawl over external aggregator
+  // pages, slower and flakier than the rest of the pipeline. Turn it on
+  // with AUTO_DISCOVER_COMPANIES=true in .env once you're happy with how
+  // often it finds new, real boards on your seed pages.
+  if (process.env.AUTO_DISCOVER_COMPANIES === "true") {
+    runStep("discover-companies", join(__dirname, "discoverCompanies.js"));
+  }
+
   runStep("discover", join(__dirname, "discover.js"));
   runStep("scrape", join(__dirname, "scrape.js"));
   runStep("score", join(__dirname, "score.js"));

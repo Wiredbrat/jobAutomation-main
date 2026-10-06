@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { chromium } from "playwright";
 import { scrapeCareersPage } from "./scrapers/genericScraper.js";
+import { isLocationEligible } from "../utils/match.js";
 import { connect, upsertJob, getNewJobs, countJobs, close } from "../db/database.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -21,7 +22,7 @@ async function run() {
 
   for (const target of targets) {
     console.log(`\n[scrape] ${target.company}: visiting ${target.url}`);
-    const jobs = await scrapeCareersPage(browser, target);
+    const jobs = (await scrapeCareersPage(browser, target)).filter(isLocationEligible);
     for (const job of jobs) await upsertJob(job);
     console.log(`[scrape] ${target.company}: ${jobs.length} job(s) kept`);
     await sleep(DELAY_MS);

@@ -35,6 +35,8 @@ app.get("/api/stats", async (req, res) => {
 app.post("/api/jobs/:id/status", async (req, res) => {
   const { status } = req.body;
   const allowed = ["new", "scored", "tailored", "applied", "skipped"];
+  // "new" is also the requeue target for jobs the strict location filter
+  // excluded — the dashboard's "Requeue" button on those cards uses this.
   if (!allowed.includes(status)) {
     return res.status(400).json({ error: `status must be one of: ${allowed.join(", ")}` });
   }

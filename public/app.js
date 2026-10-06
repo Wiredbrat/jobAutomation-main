@@ -49,19 +49,25 @@ function renderJobs(jobs) {
       <div class="score ${scoreClass(job.score)}">${job.score ?? "–"}</div>
       <div class="info">
         <div class="title" data-action="open">${escapeHtml(job.title)}</div>
-        <div class="company">${escapeHtml(job.company)} · ${job.status}</div>
+        <div class="company">${escapeHtml(job.company)} · ${STATUS_LABEL[job.status] || job.status}</div>
         ${job.score_reason ? `<div class="reason">${escapeHtml(job.score_reason)}</div>` : ""}
       </div>
       <div class="actions">
         ${
-          job.status !== "applied"
-            ? `<button class="btn primary" data-action="applied">Applied</button>`
-            : ""
-        }
-        ${
-          job.status !== "skipped"
-            ? `<button class="btn danger" data-action="skipped">Skip</button>`
-            : ""
+          job.status === "excluded_location"
+            ? `<button class="btn primary" data-action="new">Requeue</button>`
+            : `
+              ${
+                job.status !== "applied"
+                  ? `<button class="btn primary" data-action="applied">Applied</button>`
+                  : ""
+              }
+              ${
+                job.status !== "skipped"
+                  ? `<button class="btn danger" data-action="skipped">Skip</button>`
+                  : ""
+              }
+            `
         }
       </div>
     </div>`
@@ -84,7 +90,7 @@ listEl.addEventListener("click", async (e) => {
 
   if (action === "open") {
     openDrawer(job);
-  } else if (action === "applied" || action === "skipped") {
+  } else if (action === "applied" || action === "skipped" || action === "new") {
     await fetch(`/api/jobs/${encodeURIComponent(id)}/status`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -97,7 +103,7 @@ listEl.addEventListener("click", async (e) => {
 async function openDrawer(job) {
   drawerContentEl.innerHTML = `
     <h2>${escapeHtml(job.title)}</h2>
-    <div class="sub">${escapeHtml(job.company)} · score ${job.score ?? "–"}/10 · ${job.status}</div>
+    <div class="sub">${escapeHtml(job.company)} · score ${job.score ?? "–"}/10 · ${STATUS_LABEL[job.status] || job.status}</div>
     <p><a href="${job.url}" target="_blank" rel="noopener">Open original posting →</a></p>
     ${job.score_reason ? `<h3>Fit notes</h3><p>${escapeHtml(job.score_reason)}</p>` : ""}
     ${job.output_dir ? `<h3>Tailored resume</h3><pre id="resumePreview">Loading…</pre>
@@ -128,17 +134,22 @@ async function load() {
   countsEl.textContent = `${currentJobs.length} shown`;
 }
 
-const STATUS_ORDER = ["new", "scored", "tailored", "applied", "skipped"];
+const STATUS_ORDER = ["new", "scored", "tailored", "applied", "skipped", "excluded_location"];
 const STATUS_LABEL = {
   new: "New",
   scored: "Scored",
   tailored: "Tailored",
   applied: "Applied",
   skipped: "Skipped",
+  excluded_location: "Excluded (location)",
 };
 const SOURCE_LABEL = {
   greenhouse: "Greenhouse",
   lever: "Lever",
+  ashby: "Ashby",
+  smartrecruiters: "SmartRecruiters",
+  recruitee: "Recruitee",
+  workable: "Workable",
   scrape: "Scraped (other ATS)",
 };
 

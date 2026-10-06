@@ -10,7 +10,7 @@
   "author": "Atul Verma",
   "type": "module",
   "main": "server.js",
-  "scripts": {
+   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
     "discover": "node service/discover.js",
@@ -18,13 +18,17 @@
     "score": "node service/score.js",
     "tailor": "node service/tailor.js",
     "apply": "node service/apply.js",
-    "pipeline": "node service/pipeline.js"
+    "pipeline": "node service/pipeline.js",
+    "resolve-boards": "node scripts/resolveBoards.js",
+    "discover-companies": "node service/discoverCompanies.js",
+    "login": "node scripts/login.js"
   },
   "dependencies": {
     "@langchain/core": "^1.2.11",
     "@langchain/google-genai": "^2.3.2",
     "@langchain/groq": "^1.3.1",
     "@langchain/ollama": "^1.3.0",
+    "@langchain/openai": "^1.5.13",
     "axios": "^1.20.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
